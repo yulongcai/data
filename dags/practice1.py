@@ -56,4 +56,3 @@ with DAG(
     )
 
     loadData >> process >> publish
-    # process >> publish

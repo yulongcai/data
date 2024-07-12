@@ -1,12 +1,11 @@
 import os
 import shutil
 import zipfile
+from multiprocessing import freeze_support
 
 import boto3
 import requests
-
 from bs4 import BeautifulSoup
-from multiprocessing.pool import Pool
 
 headers = {
     'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
@@ -47,7 +46,8 @@ def download_file(url: str):
     print(f'下载完成: {url}')
     with zipfile.ZipFile(url.split('/')[-1], 'r') as zip_ref:
         zip_ref.extractall("/Users/yulong.cai/data_develop/airflow/data/" + url.split('/')[-1].split('.')[0] + "/")
-    shutil.rmtree("/Users/yulong.cai/data_develop/airflow/data/" + url.split('/')[-1].split('.')[0] + "/__MACOSX", ignore_errors=True)
+    shutil.rmtree("/Users/yulong.cai/data_develop/airflow/data/" + url.split('/')[-1].split('.')[0] + "/__MACOSX",
+                  ignore_errors=True)
     os.remove(url.split('/')[-1])
 
 
@@ -61,13 +61,7 @@ def upload():
 
 
 def loadData():
-    if __name__ == '__main__':
-        from multiprocessing.pool import Pool
-        pool = Pool(processes=8)
-        print(get_index_page())
-        for u in get_index_page():
-            pool.apply_async(download_file, (u,))
-            break
-        # upload()
-        pool.close()
-        pool.join()
+    print(get_index_page())
+    for u in get_index_page():
+        download_file(u)
+        break
