@@ -5,7 +5,6 @@ from datetime import timedelta
 from airflow.models.dag import DAG
 from airflow.operators.python import PythonOperator
 
-from job.downLoadData import loadData
 from job.process import process
 from job.publish import publish
 
@@ -18,7 +17,8 @@ with DAG(
             "email_on_retry": False,
             "retries": 1,
             "retry_delay": timedelta(minutes=5),
-        }
+            "execution_timeout": timedelta(hours=1)
+        },
 ) as dag:
 
     sql = """
@@ -36,7 +36,8 @@ with DAG(
 
     loadData = PythonOperator(
         task_id='loadData',
-        python_callable=loadData
+        python_callable=loadDataTest,
+        execution_timeout=timedelta(minutes=30)
     )
 
     process = PythonOperator(

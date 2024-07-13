@@ -1,7 +1,6 @@
 import os
 import shutil
 import zipfile
-from multiprocessing import freeze_support
 
 import boto3
 import requests
